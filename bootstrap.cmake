@@ -1,8 +1,14 @@
 
+include("debug.cmake")
+
 # check needed buildx variables
 if(NOT DEFINED PROJECT_NAME)
-	message(FATAL_ERROR "No project name specified!")
+	message(FATAL_ERROR "Buildx: No project name specified!")
 endif(NOT DEFINED PROJECT_NAME)
+
+if(NOT PROJECT_VERSION)
+	message(WARNING "Buildx: Please specify a version for the project!")
+endif(NOT PROJECT_VERSION)
 
 if(NOT DEFINED PROJECT_SHORTCUT)
 	set(PROJECT_SHORTCUT ${PROJECT_NAME})
@@ -13,7 +19,6 @@ if(NOT DEFINED PROJECT_PREFIX)
 endif(NOT DEFINED PROJECT_PREFIX)
 
 
-include("debug.cmake")
 include("pch.cmake")
 include("copy_media.cmake")
 include("src_scanner.cmake")
