@@ -1,6 +1,4 @@
 
-
-
 # check needed buildx variables
 if(NOT DEFINED PROJECT_NAME)
 	message(FATAL_ERROR "No project name specified!")
@@ -19,3 +17,4 @@ include("debug.cmake")
 include("pch.cmake")
 include("copy_media.cmake")
 include("src_scanner.cmake")
+include("install.cmake")
