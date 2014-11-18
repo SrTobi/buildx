@@ -20,7 +20,7 @@ endif(NOT DEFINED PROJECT_PREFIX)
 
 
 include("pch.cmake")
-include("copy_media.cmake")
+# include("copy_media.cmake")
 include("src_scanner.cmake")
 include("library.cmake")
 include("install.cmake")
