@@ -37,3 +37,19 @@ function(buildx_export_header _target)
 endfunction()
 
 
+macro(buildx_add_library _target)
+
+	string(TOUPPER "${_target}_BUILD_SHARED" shared_sym)
+	option(${shared_sym} "Build ${_target} as shared library (.dll or .so)" ON)
+
+	if(${${shared_sym}})
+		add_library(${_target} SHARED ${ARGN})
+	else()
+		add_library(${_target} STATIC ${ARGN})
+	endif()
+
+endmacro()
+
+macro(buildx_set_default_prefixes)
+	set(CMAKE_DEBUG_POSTFIX "_d")
+endmacro()
