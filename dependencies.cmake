@@ -2,6 +2,7 @@
 
 function(buildx_copy_dependency _target)
 
+	buildx_debug("Examining target '${_target}'" dep)
 	if(NOT TARGET ${_target})
 		message(FATAL_ERROR "'${_target}' is not a target yet! Forgott to import?")
 	endif()
@@ -11,7 +12,7 @@ function(buildx_copy_dependency _target)
 		buildx_debug("Copy dynamic libraries for target '${_target}'" dep)
 		add_custom_command(	TARGET ctest POST_BUILD
 							COMMAND ${CMAKE_COMMAND} -E
-							copy_if_different $<TARGET_PROPERTY:abc::abclib,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>> $<TARGET_FILE_DIR:ctest>)
+							copy_if_different $<TARGET_PROPERTY:${_target},IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>> $<TARGET_FILE_DIR:ctest>)
 	endif()
 
 	# recursive
@@ -23,6 +24,7 @@ endfunction()
 
 function(buildx_copy_target_dependencies _target)
 
+	buildx_debug("Examining target '${_target}'" dep)
 	get_property(linkl TARGET ${_target} PROPERTY LINK_LIBRARIES)
 	foreach(li ${linkl})
 		
