@@ -2,17 +2,22 @@
 #	buildx_export_header(	<target>
 #							[DESTINATION_FILE <out-file>]
 #							[DESTINATION_DIR <out-path>]
+#							[SUB_DIR <sub-dir>]
 #							[NAME <name>]
 #
 function(buildx_export_header _target)
 
 	set(options)
-	set(oneValueArgs DESTINATION_FILE DESTINATION_DIR NAME)
+	set(oneValueArgs DESTINATION_FILE DESTINATION_DIR NAME SUB_DIR)
 	set(multiValueArgs)
 	cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 	
 	# default options
-	set(out_path ${CMAKE_CURRENT_BINARY_DIR}/generated_includes)
+	set(out_base_path ${CMAKE_CURRENT_BINARY_DIR}/generated_includes)
+	
+	if(_arg_SUB_DIR)
+		set(out_path ${out_base_path}/${_arg_SUB_DIR})
+	endif()
 	
 	set(name ${_target})
 	if(_arg_NAME)
@@ -32,7 +37,7 @@ function(buildx_export_header _target)
 	endif()
 	
 	if(_arg_DESTINATION_DIR)
-		set(${_arg_DESTINATION_DIR} ${${_arg_DESTINATION_DIR}} ${out_path} PARENT_SCOPE)
+		set(${_arg_DESTINATION_DIR} ${${_arg_DESTINATION_DIR}} ${out_base_path} PARENT_SCOPE)
 	endif()
 endfunction()
 
