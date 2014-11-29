@@ -27,3 +27,11 @@ include("install.cmake")
 include("dependencies.cmake")
 include("utils.cmake")
 include("test.cmake")
+
+
+macro(buildx_set_default_output_dirs)
+	
+	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
+endmacro()
