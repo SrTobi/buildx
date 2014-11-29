@@ -28,14 +28,26 @@ function(buildx_scan_here _out _endings)
 endfunction()
 
 
-
+#	buildx_auto_group(files...
+#						[BASE_PATH <base-path>]
+#						[PREFIX <prefix>])
 function(buildx_auto_group)
 	
-	set(_files ${ARGV})
-
+	set(options)
+	set(oneValueArgs BASE_PATH PREFIX)
+	set(multiValueArgs)
+	cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+	
+	
+	set(_files ${_arg_UNPARSED_ARGUMENTS})
+	set(_base_path "${CMAKE_CURRENT_SOURCE_DIR}/")
+	if(_arg_BASE_PATH)
+		set(_base_path "${_arg_BASE_PATH}/")
+	endif()
+	
 	foreach(f ${_files})
 		if(f)
-			set(REPLACE_STRING "${CMAKE_CURRENT_SOURCE_DIR}/")
+			set(REPLACE_STRING ${_base_path})
 			set(DONE "false")
 			while(NOT ${DONE})
 				string(FIND ${f} ${REPLACE_STRING} ERG)
@@ -49,7 +61,7 @@ function(buildx_auto_group)
 			string(REPLACE "${REPLACE_STRING}" "" striped ${f})
 			get_filename_component(pathed ${striped} PATH)
 			
-			string(REPLACE "/" "\\" group_name "${pathed}")
+			string(REPLACE "/" "\\" group_name "${_arg_PREFIX}/${pathed}")
 			
 			buildx_debug("${f} = ${group_name}" group)
 			source_group("${group_name}" FILES "${f}")
