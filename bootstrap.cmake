@@ -18,7 +18,7 @@ if(NOT DEFINED PROJECT_PREFIX)
 	set(PROJECT_PREFIX ${PROJECT_SHORTCUT})
 endif(NOT DEFINED PROJECT_PREFIX)
 
-
+include("print_properties.cmake")
 include("pch.cmake")
 # include("copy_media.cmake")
 include("src_scanner.cmake")
