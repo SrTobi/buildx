@@ -6,9 +6,11 @@
 
 
 #include <boost/test/unit_test.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/utility.hpp>
+#include <boost/lockfree/queue.hpp>
 #include <list>
+#include <memory>
+#include <mutex>
 
 #define TESTX_PARAM_TEST_CASE(_name, ...)	\
 			void _name (__VA_ARGS__)
@@ -58,31 +60,31 @@ namespace testx {
 	public:
 		struct Inserter
 		{
-			Inserter(boost::shared_ptr<std::list<Events> > events)
+			Inserter(std::shared_ptr<boost::lockfree::queue<Events> > events)
 				: events(events)
 			{
 			}
 
 			Inserter& operator << (const Events& v)
 			{
-				events->push_back(v);
+				events->push(v);
 				return *this;
 			}
 
 		private:
-			boost::shared_ptr<std::list<Events> > events;
+			std::shared_ptr<boost::lockfree::queue<Events> > events;
 		};
 
 		MockObserver()
 		{
-			events = boost::make_shared<std::list<Events> >();
+			events = std::make_shared<boost::lockfree::queue<Events> >(0);
 		}
 
 		~MockObserver()
 		{
 			if(events.unique())
 			{
-				BOOST_CHECK_EQUAL(events->size(), 0);
+				BOOST_CHECK(events->empty());
 			}
 		}
 
@@ -93,9 +95,9 @@ namespace testx {
 
 		void expect(const Events& v)
 		{
-			BOOST_REQUIRE(events->size());
-			BOOST_CHECK_EQUAL(v, events->front());
-			events->pop_front();
+			Events q;
+			BOOST_REQUIRE(events->pop(q));
+			BOOST_CHECK_EQUAL(v, q);
 		}
 
 		Inserter set()
@@ -105,8 +107,7 @@ namespace testx {
 		
 
 	private:
-
-		boost::shared_ptr<std::list<Events> > events;
+		std::shared_ptr<boost::lockfree::queue<Events> > events;
 	};
 
 }
