@@ -24,6 +24,7 @@ macro(buildx_add_external_test _target_name _test_path)
 	endif(WIN32)
 	find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 	
+	set(_BUILDX_TMP_TEST_SOURCE "")
 	buildx_scan(_BUILDX_TMP_TEST_SOURCE ${_test_path} "hpp;cpp")
 	add_executable(${_target_name} ${_BUILDX_TMP_TEST_SOURCE} ${config_file_target})
 	set_target_properties(${_target_name} PROPERTIES COMPILE_DEFINITIONS "TESTX_TEST")
@@ -63,6 +64,7 @@ macro(buildx_add_internal_test _target_name _test_path)
 	get_target_property(_org_source ${_arg_TEST_TARGET} SOURCES)
 	
 	# search test source and build executable
+	set(_BUILDX_TMP_TEST_SOURCE "")
 	buildx_scan(_BUILDX_TMP_TEST_SOURCE ${_test_path} "hpp;cpp")
 	add_executable(${_target_name} ${_BUILDX_TMP_TEST_SOURCE} ${config_file_target} ${_org_source})
 	
