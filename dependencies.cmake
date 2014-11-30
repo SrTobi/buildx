@@ -20,7 +20,9 @@ function(buildx_copy_dependency _target _to)
 	# recursive
 	get_property(linkl TARGET ${_target} PROPERTY INTERFACE_LINK_LIBRARIES)
 	foreach(li ${linkl})
-		buildx_copy_dependency(${li})		
+		if(TARGET ${li})
+			buildx_copy_dependency("${li}" "${_to}")
+		endif()
 	endforeach()
 endfunction()
 
