@@ -26,6 +26,8 @@ macro(buildx_add_external_test _target_name _test_path)
 	
 	set(_BUILDX_TMP_TEST_SOURCE "")
 	buildx_scan(_BUILDX_TMP_TEST_SOURCE ${_test_path} "hpp;cpp")
+	buildx_auto_group(${_BUILDX_TMP_TEST_SOURCE} BASE_PATH ${_test_path} PREFIX tests)	
+	buildx_auto_group(${config_file_target} BASE_PATH ${CMAKE_CURRENT_BINARY_DIR} PREFIX test_module)	
 	add_executable(${_target_name} ${_BUILDX_TMP_TEST_SOURCE} ${config_file_target})
 	set_target_properties(${_target_name} PROPERTIES COMPILE_DEFINITIONS "TESTX_TEST")
 	target_link_libraries(${_target_name} ${_arg_TEST_TARGETS} ${Boost_LIBRARIES})
@@ -66,6 +68,8 @@ macro(buildx_add_internal_test _target_name _test_path)
 	# search test source and build executable
 	set(_BUILDX_TMP_TEST_SOURCE "")
 	buildx_scan(_BUILDX_TMP_TEST_SOURCE ${_test_path} "hpp;cpp")
+	buildx_auto_group(${_BUILDX_TMP_TEST_SOURCE} BASE_PATH ${_test_path} PREFIX tests)	
+	buildx_auto_group(${config_file_target} BASE_PATH ${CMAKE_CURRENT_BINARY_DIR} PREFIX test_module)	
 	add_executable(${_target_name} ${_BUILDX_TMP_TEST_SOURCE} ${config_file_target} ${_org_source})
 	
 	# get definitions
