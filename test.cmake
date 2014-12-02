@@ -19,9 +19,7 @@ macro(buildx_add_external_test _target_name _test_path)
 	set(config_file_target ${CMAKE_CURRENT_BINARY_DIR}/${_target_name}-module.cpp)
 	configure_file(${_BUILDX_TESTX_MODULE_CONFIG_FILE} ${config_file_target} @ONLY)
 	
-	if(WIN32)
-		set(Boost_USE_STATIC_LIBS true)
-	endif(WIN32)
+	set(Boost_USE_STATIC_LIBS true)
 	find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 	
 	set(_BUILDX_TMP_TEST_SOURCE "")
@@ -57,9 +55,7 @@ macro(buildx_add_internal_test _target_name _test_path)
 	set(config_file_target ${CMAKE_CURRENT_BINARY_DIR}/${_target_name}-module.cpp)
 	configure_file(${_BUILDX_TESTX_MODULE_CONFIG_FILE} ${config_file_target} @ONLY)
 	
-	if(WIN32)
-		set(Boost_USE_STATIC_LIBS true)
-	endif(WIN32)
+	set(Boost_USE_STATIC_LIBS true)
 	find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 	
 	# get target source
