@@ -10,7 +10,7 @@ macro(buildx_enable_pch)
 		add_definitions("-D${PROJECT_PREFIX}_USE_PRECOMPILED_HEADER")
 		
 		macro(buildx_pch _targetName _input)
-			buildx_pch_impl(_targetName _input)
+			buildx_pch_impl(${_targetName} ${_input})
 		endmacro()
 		
 		
