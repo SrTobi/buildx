@@ -6,12 +6,13 @@ set(_BUILDX_TESTX_MODULE_CONFIG_FILE "${CMAKE_CURRENT_LIST_DIR}/configs/test-mod
 # buildx_add_external_test(	test_target
 #							test_path
 #							TEST_TARGETS targets
+#							DEFINITIONS defs
 #							)
 macro(buildx_add_external_test _target_name _test_path)
 
 	set(options)
 	set(oneValueArgs)
-	set(multiValueArgs TEST_TARGETS)
+	set(multiValueArgs TEST_TARGETS DEFINITIONS)
 	cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	# configure module file
@@ -28,6 +29,7 @@ macro(buildx_add_external_test _target_name _test_path)
 	buildx_auto_group(${config_file_target} BASE_PATH ${CMAKE_CURRENT_BINARY_DIR} PREFIX test_module)	
 	add_executable(${_target_name} ${_BUILDX_TMP_TEST_SOURCE} ${config_file_target})
 	set_target_properties(${_target_name} PROPERTIES COMPILE_DEFINITIONS "TESTX_TEST")
+	set_property(TARGET ${_target_name} APPEND_STRING PROPERTY COMPILE_DEFINITIONS "${_arg_DEFINITIONS}")
 	target_link_libraries(${_target_name} ${_arg_TEST_TARGETS} ${Boost_LIBRARIES})
 	target_include_directories(${_target_name} PRIVATE ${_BUILDX_TESTX_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
@@ -36,13 +38,14 @@ endmacro(buildx_add_external_test)
 
 # buildx_add_internal_test(	test_target
 #							test_path
-#							TEST_TARGET targets
+#							TEST_TARGET target
+#							DEFINITIONS defs
 #							)
 macro(buildx_add_internal_test _target_name _test_path)
 
 	set(options)
 	set(oneValueArgs TEST_TARGET)
-	set(multiValueArgs)
+	set(multiValueArgs DEFINITIONS)
 	cmake_parse_arguments(_arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if(NOT _arg_TEST_TARGET)
@@ -75,6 +78,7 @@ macro(buildx_add_internal_test _target_name _test_path)
 	endif()
 	set_property(TARGET ${_target_name} APPEND_STRING PROPERTY COMPILE_DEFINITIONS "TESTX_TEST")
 	set_property(TARGET ${_target_name} APPEND_STRING PROPERTY COMPILE_DEFINITIONS "${_arg_TEST_TARGET}_EXPORTS")
+	set_property(TARGET ${_target_name} APPEND_STRING PROPERTY COMPILE_DEFINITIONS "${_arg_DEFINITIONS}")
 	
 	# get include dirs
 	get_target_property(_org_include_dirs ${_arg_TEST_TARGET} INCLUDE_DIRECTORIES)
