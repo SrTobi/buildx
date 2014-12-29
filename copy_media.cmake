@@ -5,7 +5,7 @@ option(Option_COPY_MEDIA	"Copies the media files for samples and tests into the 
 
 
 
-function(NEED_MEDIA _target _resource)
+function(buildx_copy_media _target _resource)
 	
 	if(Option_COPY_MEDIA)
 		set(res "${PROJECT_SOURCE_DIR}/${Project_MEDIA_DIR}/${_resource}")

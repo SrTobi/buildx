@@ -28,7 +28,7 @@ include("install.cmake")
 include("dependencies.cmake")
 include("utils.cmake")
 include("test.cmake")
-
+include("copy_media.cmake")
 
 macro(buildx_set_default_output_dirs)
 	
