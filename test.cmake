@@ -2,6 +2,14 @@
 set(_BUILDX_TESTX_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/testx/include" PARENT_SCOPE)
 set(_BUILDX_TESTX_MODULE_CONFIG_FILE "${CMAKE_CURRENT_LIST_DIR}/configs/test-module-config.cpp" PARENT_SCOPE)
 
+function(buildx_add_boost_test_framework _target_name)
+	set(Boost_USE_STATIC_LIBS true)
+	find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+	target_link_libraries(${_target_name} ${Boost_LIBRARIES})
+	target_include_directories(${_target_name} PRIVATE ${Boost_INCLUDE_DIRS})
+
+endfunction(buildx_add_boost_test_framework)
+
 
 # buildx_add_external_test(	test_target
 #							test_path
@@ -20,9 +28,6 @@ macro(buildx_add_external_test _target_name _test_path)
 	set(config_file_target ${CMAKE_CURRENT_BINARY_DIR}/${_target_name}-module.cpp)
 	configure_file(${_BUILDX_TESTX_MODULE_CONFIG_FILE} ${config_file_target} @ONLY)
 	
-	set(Boost_USE_STATIC_LIBS true)
-	find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-	
 	set(_BUILDX_TMP_TEST_SOURCE "")
 	buildx_scan(_BUILDX_TMP_TEST_SOURCE ${_test_path} "hpp;cpp")
 	buildx_auto_group(${_BUILDX_TMP_TEST_SOURCE} BASE_PATH ${_test_path} PREFIX tests)	
@@ -30,8 +35,9 @@ macro(buildx_add_external_test _target_name _test_path)
 	add_executable(${_target_name} ${_BUILDX_TMP_TEST_SOURCE} ${config_file_target})
 	set_target_properties(${_target_name} PROPERTIES COMPILE_DEFINITIONS "TESTX_TEST")
 	set_property(TARGET ${_target_name} APPEND_STRING PROPERTY COMPILE_DEFINITIONS "${_arg_DEFINITIONS}")
-	target_link_libraries(${_target_name} ${_arg_TEST_TARGETS} ${Boost_LIBRARIES})
-	target_include_directories(${_target_name} PRIVATE ${_BUILDX_TESTX_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+	target_link_libraries(${_target_name} ${_arg_TEST_TARGETS})
+	target_include_directories(${_target_name} PRIVATE ${_BUILDX_TESTX_INCLUDE_DIR})
+	buildx_add_boost_test_framework(${target_name})
 
 endmacro(buildx_add_external_test)
 
@@ -58,9 +64,6 @@ macro(buildx_add_internal_test _target_name _test_path)
 	set(config_file_target ${CMAKE_CURRENT_BINARY_DIR}/${_target_name}-module.cpp)
 	configure_file(${_BUILDX_TESTX_MODULE_CONFIG_FILE} ${config_file_target} @ONLY)
 	
-	set(Boost_USE_STATIC_LIBS true)
-	find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-	
 	# get target source
 	get_target_property(_org_source ${_arg_TEST_TARGET} SOURCES)
 	
@@ -83,7 +86,7 @@ macro(buildx_add_internal_test _target_name _test_path)
 	# get include dirs
 	get_target_property(_org_include_dirs ${_arg_TEST_TARGET} INCLUDE_DIRECTORIES)
 	
-	target_link_libraries(${_target_name} ${Boost_LIBRARIES})
-	target_include_directories(${_target_name} PRIVATE ${_BUILDX_TESTX_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${_org_include_dirs})
+	target_include_directories(${_target_name} PRIVATE ${_BUILDX_TESTX_INCLUDE_DIR} ${_org_include_dirs})
+	buildx_add_boost_test_framework(${_target_name})
 
 endmacro(buildx_add_internal_test)
